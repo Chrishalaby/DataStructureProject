@@ -11,6 +11,7 @@
             pInputText
             [(ngModel)]="key"
             placeholder="Enter key"
+            pTooltip="Enter a numeric key for the hash table. In this static hash table, the key is used to store and retrieve values efficiently."
           />
         </div>
         <div class="p-field">
@@ -21,19 +22,39 @@
             pInputText
             [(ngModel)]="value"
             placeholder="Enter value"
+            pTooltip="Enter the value associated with the key. This value is stored in the hash table at the position determined by the key."
           />
         </div>
         <div class="p-field flex flex-row flex-wrap gap-2">
-          <p-button label="Insert" (onClick)="insert()"></p-button>
-          <p-button label="Update" (onClick)="update()"></p-button>
-          <p-button label="Get Value" (onClick)="getValue()"></p-button>
-          <p-button label="Remove" (onClick)="remove()"></p-button>
+          <p-button
+            label="Insert"
+            (onClick)="insert()"
+            pTooltip="Add a new key-value pair to the hash table. If the key already exists, it won't be added again."
+          ></p-button>
+          <p-button
+            label="Update"
+            (onClick)="update()"
+            pTooltip="Update the value of an existing key. If the key doesn't exist, no update will be performed."
+          ></p-button>
+          <p-button
+            label="Get Value"
+            (onClick)="getValue()"
+            pTooltip="Retrieve the value associated with a given key. If the key is not found, you'll get a 'Key not found' message."
+          ></p-button>
+          <p-button
+            label="Remove"
+            (onClick)="remove()"
+            pTooltip="Remove a key-value pair from the hash table using the specified key."
+          ></p-button>
         </div>
       </div>
       <p>Result: {{ result }}</p>
     </section>
 
-    <div class="card">
+    <div
+      class="card"
+      pTooltip="Displays the current elements in the static hash table. This table doesn't resize dynamically."
+    >
       <h3>Current State of Static Hash Table</h3>
       <ul>
         <li *ngFor="let item of hashTableItems">
@@ -45,6 +66,17 @@
   <p-tabPanel header="Dynamic Hash Table">
     <section class="card">
       <h2>Dynamic Hash Table Operations</h2>
+      <p
+        pTooltip="The total number of slots (buckets) in the hash table. This number increases as the table resizes."
+        tooltipPosition="top"
+      >
+        Capacity: {{ dynamicCapacity }}
+      </p>
+      <p
+        pTooltip="The ratio of the number of stored elements to the hash table's capacity. A higher load factor indicates a more filled table."
+      >
+        Load Factor: {{ dynamicLoadFactor | number : "1.2-2" }}
+      </p>
       <div class="p-fluid flex flex-column gap-3">
         <div class="p-field">
           <label for="key">Key</label>
@@ -54,6 +86,7 @@
             pInputText
             [(ngModel)]="key"
             placeholder="Enter key"
+            pTooltip="Enter a key (string or number) for the dynamic hash table. The key is hashed to store and retrieve corresponding values."
           />
         </div>
         <div class="p-field">
@@ -64,19 +97,39 @@
             pInputText
             [(ngModel)]="value"
             placeholder="Enter value"
+            pTooltip="Enter the value to be associated with the key. The hash table maps keys to these values."
           />
         </div>
         <div class="p-field flex flex-row flex-wrap gap-2">
-          <p-button label="Insert" (onClick)="dynamicInsert()"></p-button>
-          <p-button label="Update" (onClick)="dynamicUpdate()"></p-button>
-          <p-button label="Get Value" (onClick)="dynamicGetValue()"></p-button>
-          <p-button label="Remove" (onClick)="dynamicRemove()"></p-button>
+          <p-button
+            label="Insert"
+            (onClick)="dynamicInsert()"
+            pTooltip="Inserts a new key-value pair. The hash table will resize and rehash elements if the load factor exceeds a certain threshold."
+          ></p-button>
+          <p-button
+            label="Update"
+            (onClick)="dynamicUpdate()"
+            pTooltip="Updates the value for an existing key. If the key doesn’t exist, no update will occur."
+          ></p-button>
+          <p-button
+            label="Get Value"
+            (onClick)="dynamicGetValue()"
+            pTooltip="Retrieves the value for a specified key. Returns 'Key not found' if the key doesn't exist in the table."
+          ></p-button>
+          <p-button
+            label="Remove"
+            (onClick)="dynamicRemove()"
+            pTooltip="Removes the key-value pair associated with the specified key."
+          ></p-button>
         </div>
       </div>
       <p>Result: {{ result }}</p>
     </section>
 
-    <div class="card">
+    <div
+      class="card"
+      pTooltip="Shows the current elements and the table's capacity. The dynamic hash table increases its size to maintain efficient operations as more elements are added."
+    >
       <h3>Current State of Dynamic Hash Table</h3>
       <ul>
         <li *ngFor="let item of hashTableItemsDynamic">

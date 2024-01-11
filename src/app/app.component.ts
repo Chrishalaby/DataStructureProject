@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabViewModule } from 'primeng/tabview';
+import { TooltipModule } from 'primeng/tooltip';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,6 +18,7 @@ import { TabViewModule } from 'primeng/tabview';
     InputTextModule,
     CardModule,
     TabViewModule,
+    TooltipModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -32,6 +34,9 @@ export class AppComponent {
   key!: number;
   value!: number;
   result!: string;
+
+  dynamicCapacity!: number;
+  dynamicLoadFactor!: number;
 
   insert(): void {
     const inserted = this.hashTable.insert(this.key, this.value);
@@ -83,8 +88,15 @@ export class AppComponent {
 
   dynamicInsert(): void {
     try {
+      const previousCapacity = this.dynamicCapacity;
       this.dynamicHashTable.insert(this.key.toString(), this.value);
-      this.result = `Inserted key ${this.key} with value ${this.value}`;
+      const newCapacity = this.dynamicHashTable.table.length;
+
+      if (newCapacity > previousCapacity) {
+        this.result = `Table resized from ${previousCapacity} to ${newCapacity}. Inserted key ${this.key} with value ${this.value}`;
+      } else {
+        this.result = `Inserted key ${this.key} with value ${this.value}`;
+      }
     } catch (error) {
       this.result = `Error: ${(error as Error).message}`;
     }
@@ -125,6 +137,8 @@ export class AppComponent {
         currentNode = currentNode.next;
       }
     }
+    this.dynamicCapacity = this.dynamicHashTable.table.length;
+    this.dynamicLoadFactor = this.dynamicHashTable.count / this.dynamicCapacity;
   }
 }
 class Node {
@@ -238,7 +252,7 @@ class DynamicNode<K, V> {
 class DynamicHashTable<K, V> {
   table: Array<DynamicNode<K, V> | null>;
   private size: number;
-  private count: number;
+  count: number;
   private loadFactorThreshold: number;
 
   constructor(initialSize: number = 10, loadFactorThreshold: number = 0.75) {
