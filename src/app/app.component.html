@@ -1,40 +1,88 @@
-<section class="card">
-  <h2>Hash Table Operations</h2>
-  <div class="p-fluid flex flex-column gap-3">
-    <div class="p-field">
-      <label for="key">Key</label>
-      <input
-        id="key"
-        type="text"
-        pInputText
-        [(ngModel)]="key"
-        placeholder="Enter key"
-      />
-    </div>
-    <div class="p-field">
-      <label for="value">Value</label>
-      <input
-        id="value"
-        type="text"
-        pInputText
-        [(ngModel)]="value"
-        placeholder="Enter value"
-      />
-    </div>
-    <div class="p-field flex flex-row gap-2">
-      <p-button label="Insert" (onClick)="insert()"></p-button>
-      <p-button label="Get Value" (onClick)="getValue()"></p-button>
-      <p-button label="Remove" (onClick)="remove()"></p-button>
-    </div>
-  </div>
-  <p>Result: {{ result }}</p>
-</section>
+<p-tabView>
+  <p-tabPanel header="Static HashTable">
+    <section class="card">
+      <h2>Static Hash Table Operations</h2>
+      <div class="p-fluid flex flex-column gap-3">
+        <div class="p-field">
+          <label for="key">Key</label>
+          <input
+            id="key"
+            type="text"
+            pInputText
+            [(ngModel)]="key"
+            placeholder="Enter key"
+          />
+        </div>
+        <div class="p-field">
+          <label for="value">Value</label>
+          <input
+            id="value"
+            type="text"
+            pInputText
+            [(ngModel)]="value"
+            placeholder="Enter value"
+          />
+        </div>
+        <div class="p-field flex flex-row flex-wrap gap-2">
+          <p-button label="Insert" (onClick)="insert()"></p-button>
+          <p-button label="Update" (onClick)="update()"></p-button>
+          <p-button label="Get Value" (onClick)="getValue()"></p-button>
+          <p-button label="Remove" (onClick)="remove()"></p-button>
+        </div>
+      </div>
+      <p>Result: {{ result }}</p>
+    </section>
 
-<div class="card">
-  <h3>Current State of Hash Table</h3>
-  <ul>
-    <li *ngFor="let item of hashTableItems">
-      Key: {{ item.key }}, Value: {{ item.value }}
-    </li>
-  </ul>
-</div>
+    <div class="card">
+      <h3>Current State of Static Hash Table</h3>
+      <ul>
+        <li *ngFor="let item of hashTableItems">
+          Key: {{ item.key }}, Value: {{ item.value }}
+        </li>
+      </ul>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Dynamic Hash Table">
+    <section class="card">
+      <h2>Dynamic Hash Table Operations</h2>
+      <div class="p-fluid flex flex-column gap-3">
+        <div class="p-field">
+          <label for="key">Key</label>
+          <input
+            id="key"
+            type="text"
+            pInputText
+            [(ngModel)]="key"
+            placeholder="Enter key"
+          />
+        </div>
+        <div class="p-field">
+          <label for="value">Value</label>
+          <input
+            id="value"
+            type="text"
+            pInputText
+            [(ngModel)]="value"
+            placeholder="Enter value"
+          />
+        </div>
+        <div class="p-field flex flex-row flex-wrap gap-2">
+          <p-button label="Insert" (onClick)="dynamicInsert()"></p-button>
+          <p-button label="Update" (onClick)="dynamicUpdate()"></p-button>
+          <p-button label="Get Value" (onClick)="dynamicGetValue()"></p-button>
+          <p-button label="Remove" (onClick)="dynamicRemove()"></p-button>
+        </div>
+      </div>
+      <p>Result: {{ result }}</p>
+    </section>
+
+    <div class="card">
+      <h3>Current State of Dynamic Hash Table</h3>
+      <ul>
+        <li *ngFor="let item of hashTableItemsDynamic">
+          Key: {{ item.key }}, Value: {{ item.value }}
+        </li>
+      </ul>
+    </div>
+  </p-tabPanel>
+</p-tabView>
