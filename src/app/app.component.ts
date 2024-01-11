@@ -304,20 +304,24 @@ class DynamicHashTable<K, V> {
       this.resize();
     }
     const index = this.hashFunction(key);
+    let current = this.table[index];
+    let prev = null;
+
+    while (current) {
+      if (current.key === key) {
+        // Key already exists, throw an error or update the value
+        throw new Error('Key already exists');
+      }
+      prev = current;
+      current = current.next;
+    }
+
+    // Insert the new node at the end of the list or as the first node if the list is empty
     const newNode = new DynamicNode(key, value);
-    if (!this.table[index]) {
-      this.table[index] = newNode;
+    if (prev) {
+      prev.next = newNode;
     } else {
-      let current = this.table[index];
-      while (current?.next) {
-        if (current.key === key) {
-          throw new Error('Key already exists');
-        }
-        current = current.next;
-      }
-      if (current) {
-        current.next = newNode;
-      }
+      this.table[index] = newNode;
     }
     this.count++;
   }
