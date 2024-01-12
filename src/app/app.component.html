@@ -138,4 +138,148 @@
       </ul>
     </div>
   </p-tabPanel>
+  <p-tabPanel header="Enhanced Hash Table">
+    <section class="card">
+      <h2>Enhanced Hash Table Operations</h2>
+      <div class="p-fluid flex flex-column gap-3">
+        <div class="p-field">
+          <label for="key">Key</label>
+          <input
+            id="key"
+            type="text"
+            pInputText
+            [(ngModel)]="key"
+            placeholder="Enter key"
+            pTooltip="Enter a key (string or number) for the dynamic hash table. The key is hashed to store and retrieve corresponding values."
+          />
+        </div>
+        <div class="p-field">
+          <label for="value">Value</label>
+          <input
+            id="value"
+            type="text"
+            pInputText
+            [(ngModel)]="value"
+            placeholder="Enter value"
+            pTooltip="Enter the value to be associated with the key. The hash table maps keys to these values."
+          />
+        </div>
+        <div class="p-field flex flex-row flex-wrap gap-2">
+          <p-button
+            label="Insert"
+            (onClick)="insertEnhanced()"
+            pTooltip="Inserts a new key-value pair. The hash table will resize and rehash elements if the load factor exceeds a certain threshold."
+          ></p-button>
+          <p-button
+            label="Update"
+            (onClick)="updateEnhanced()"
+            pTooltip="Updates the value for an existing key. If the key doesn’t exist, no update will occur."
+          ></p-button>
+          <p-button
+            label="Get Value"
+            (onClick)="getValueEnhanced()"
+            pTooltip="Retrieves the value for a specified key. Returns 'Key not found' if the key doesn't exist in the table."
+          ></p-button>
+          <p-button
+            label="Remove"
+            (onClick)="removeEnhanced()"
+            pTooltip="Removes the key-value pair associated with the specified key."
+          ></p-button>
+        </div>
+      </div>
+      <p>Result: {{ result }}</p>
+    </section>
+
+    <div
+      class="card"
+      pTooltip="Shows the current elements and the table's capacity. The dynamic hash table increases its size to maintain efficient operations as more elements are added."
+    >
+      <h3>Current State of Dynamic Hash Table</h3>
+      <ul>
+        <li *ngFor="let item of hashTableItemsEnhanced">
+          Key: {{ item.key }}, Value: {{ item.value }}
+        </li>
+      </ul>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Linear Hash Table">
+    <section class="card">
+      <h2>Linear Hash Table Operations</h2>
+      <div class="p-fluid flex flex-column gap-3">
+        <div class="p-field">
+          <label for="key">Key</label>
+          <input
+            id="key"
+            type="text"
+            pInputText
+            [(ngModel)]="key"
+            placeholder="Enter key"
+            pTooltip="Enter a key (string or number) for the dynamic hash table. The key is hashed to store and retrieve corresponding values."
+          />
+        </div>
+        <div class="p-field">
+          <label for="value">Value</label>
+          <input
+            id="value"
+            type="text"
+            pInputText
+            [(ngModel)]="value"
+            placeholder="Enter value"
+            pTooltip="Enter the value to be associated with the key. The hash table maps keys to these values."
+          />
+        </div>
+        <div class="p-field flex flex-row flex-wrap gap-2">
+          <p-button
+            label="Insert"
+            (onClick)="insertLinearProbing()"
+            pTooltip="Inserts a new key-value pair. The hash table will resize and rehash elements if the load factor exceeds a certain threshold."
+          ></p-button>
+          <p-button
+            label="Update"
+            (onClick)="updateLinearProbing()"
+            pTooltip="Updates the value for an existing key. If the key doesn’t exist, no update will occur."
+          ></p-button>
+          <p-button
+            label="Get Value"
+            (onClick)="getValueLinearProbing()"
+            pTooltip="Retrieves the value for a specified key. Returns 'Key not found' if the key doesn't exist in the table."
+          ></p-button>
+          <p-button
+            label="Remove"
+            (onClick)="removeLinearProbing()"
+            pTooltip="Removes the key-value pair associated with the specified key."
+          ></p-button>
+        </div>
+      </div>
+      <p>Result: {{ result }}</p>
+    </section>
+
+    <!-- <div
+      class="card"
+      pTooltip="Shows the current elements and the table's capacity. The dynamic hash table increases its size to maintain efficient operations as more elements are added."
+    >
+      <h3>Current State of Linear Hash Table</h3>
+      <ul>
+        <li *ngFor="let item of hashTableItemsLinearProbing">
+          Key: {{ item.key }}, Value: {{ item.value }}
+        </li>
+      </ul>
+    </div> -->
+    <div class="card">
+      <h3>Current State of Linear Probing Hash Table</h3>
+      <ul>
+        <li *ngFor="let slot of hashTableStructureLinearProbing">
+          <span
+            [ngClass]="{
+              'occupied-slot': slot.status === 'occupied',
+              'empty-slot': slot.status === 'empty'
+            }"
+          >
+            Index: {{ slot.index }}, Key: {{ slot.key || "N/A" }}, Value:
+            {{ slot.value || "N/A" }}, Status: {{ slot.status }}
+          </span>
+        </li>
+      </ul>
+    </div>
+  </p-tabPanel>
 </p-tabView>

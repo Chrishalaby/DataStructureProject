@@ -28,15 +28,28 @@ export class AppComponent {
 
   hashTableItems: { key: number; value: number }[] = [];
   hashTableItemsDynamic: { key: number; value: number }[] = [];
+  hashTableItemsLinearProbing: { key: number; value: number }[] = [];
+  hashTableItemsEnhanced: { key: number; value: number }[] = [];
+  hashTableStructureLinearProbing: {
+    index: number;
+    key: any;
+    value: any;
+    status: string;
+  }[] = [];
 
   hashTable = new HashTable();
   dynamicHashTable = new DynamicHashTable<string, number>();
+  linearProbingHashTable = new LinearProbingHashTable();
+  enhancedHashTable = new EnhancedHashTable();
+
   key!: number;
   value!: number;
   result!: string;
 
   dynamicCapacity!: number;
   dynamicLoadFactor!: number;
+
+  // ##### HERE STARTS STATIC HASH TABLE #####
 
   insert(): void {
     const inserted = this.hashTable.insert(this.key, this.value);
@@ -85,6 +98,8 @@ export class AppComponent {
       }
     }
   }
+
+  // ##### HERE STARTS DYNAMIC HASH TABLE #####
 
   dynamicInsert(): void {
     try {
@@ -140,7 +155,135 @@ export class AppComponent {
     this.dynamicCapacity = this.dynamicHashTable.table.length;
     this.dynamicLoadFactor = this.dynamicHashTable.count / this.dynamicCapacity;
   }
+
+  // ##### FUNCTIONS FOR LINEAR PROBING HASH TABLE #####
+
+  insertLinearProbing(): void {
+    const inserted = this.linearProbingHashTable.insert(this.key, this.value);
+    this.result = inserted
+      ? `Inserted key ${this.key} with value ${this.value} (Linear Probing)`
+      : `Insertion failed: Key ${this.key} already exists (Linear Probing)`;
+
+    this.updateHashTableItemsLinearProbing();
+  }
+
+  updateLinearProbing(): void {
+    const updated = this.linearProbingHashTable.update(this.key, this.value);
+    this.result = updated
+      ? `Updated key ${this.key} with new value ${this.value} (Linear Probing)`
+      : 'Key not found, update not performed (Linear Probing)';
+
+    this.updateHashTableItemsLinearProbing();
+  }
+
+  getValueLinearProbing(): void {
+    const value = this.linearProbingHashTable.get(this.key);
+    this.result =
+      value !== null
+        ? `Value: ${value} (Linear Probing)`
+        : 'Key not found (Linear Probing)';
+
+    this.updateHashTableItemsLinearProbing();
+  }
+
+  removeLinearProbing(): void {
+    const removed = this.linearProbingHashTable.remove(this.key);
+    this.result = removed
+      ? `Key ${this.key} removed (Linear Probing)`
+      : 'Key not found (Linear Probing)';
+
+    this.updateHashTableItemsLinearProbing();
+  }
+
+  // updateHashTableItemsLinearProbing(): void {
+  //   this.hashTableItemsLinearProbing = [];
+  //   for (let i = 0; i < this.linearProbingHashTable.table.length; i++) {
+  //     const item = this.linearProbingHashTable.table[i];
+  //     if (item !== null) {
+  //       this.hashTableItemsLinearProbing.push({
+  //         key: item.key,
+  //         value: item.value,
+  //       });
+  //     }
+  //   }
+  // }
+  updateHashTableItemsLinearProbing(): void {
+    this.hashTableStructureLinearProbing = [];
+    for (let i = 0; i < this.linearProbingHashTable.table.length; i++) {
+      const slot = this.linearProbingHashTable.table[i];
+      if (slot !== null) {
+        this.hashTableStructureLinearProbing.push({
+          index: i,
+          key: slot.key,
+          value: slot.value,
+          status: 'occupied',
+        });
+      } else {
+        this.hashTableStructureLinearProbing.push({
+          index: i,
+          key: null,
+          value: null,
+          status: 'empty',
+        });
+      }
+    }
+  }
+
+  // ##### FUNCTIONS FOR ENHANCED HASH TABLE #####
+
+  insertEnhanced(): void {
+    const inserted = this.enhancedHashTable.insert(this.key, this.value);
+    this.result = inserted
+      ? `Inserted key ${this.key} with value ${this.value} (Enhanced)`
+      : `Insertion failed: Key ${this.key} already exists (Enhanced)`;
+
+    this.updateHashTableItemsEnhanced();
+  }
+
+  updateEnhanced(): void {
+    const updated = this.enhancedHashTable.update(this.key, this.value);
+    this.result = updated
+      ? `Updated key ${this.key} with new value ${this.value} (Enhanced)`
+      : 'Key not found, update not performed (Enhanced)';
+
+    this.updateHashTableItemsEnhanced();
+  }
+
+  getValueEnhanced(): void {
+    const value = this.enhancedHashTable.get(this.key);
+    this.result =
+      value !== null
+        ? `Value: ${value} (Enhanced)`
+        : 'Key not found (Enhanced)';
+
+    this.updateHashTableItemsEnhanced();
+  }
+
+  removeEnhanced(): void {
+    const removed = this.enhancedHashTable.remove(this.key);
+    this.result = removed
+      ? `Key ${this.key} removed (Enhanced)`
+      : 'Key not found (Enhanced)';
+
+    this.updateHashTableItemsEnhanced();
+  }
+
+  updateHashTableItemsEnhanced(): void {
+    this.hashTableItemsEnhanced = [];
+    for (let i = 0; i < this.enhancedHashTable.table.length; i++) {
+      let currentNode = this.enhancedHashTable.table[i];
+      while (currentNode !== null) {
+        this.hashTableItemsEnhanced.push({
+          key: currentNode.key,
+          value: currentNode.value,
+        });
+        currentNode = currentNode.next;
+      }
+    }
+  }
 }
+
+// Static Hash Table
 class Node {
   key: number;
   value: number;
@@ -236,6 +379,8 @@ class HashTable {
     return false; // Key not found
   }
 }
+
+// Dynamic Hash Table
 
 class DynamicNode<K, V> {
   key: K;
@@ -369,5 +514,222 @@ class DynamicHashTable<K, V> {
       current = current.next;
     }
     return false;
+  }
+}
+
+class EnhancedHashTable {
+  private size: number;
+  private loadFactorThreshold: number;
+  table: Array<Node | null>;
+
+  constructor(size: number = 10, loadFactorThreshold: number = 0.75) {
+    this.size = size;
+    this.loadFactorThreshold = loadFactorThreshold;
+    this.table = new Array<Node | null>(size).fill(null);
+  }
+
+  private hashFunction(key: any): number {
+    if (typeof key === 'number') {
+      return key % this.size;
+    } else if (typeof key === 'string') {
+      let hash = 0;
+      for (let i = 0; i < key.length; i++) {
+        hash = (hash << 5) - hash + key.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
+      }
+      return Math.abs(hash) % this.size;
+    }
+    throw new Error('Unsupported key type');
+  }
+
+  private resizeIfNeeded() {
+    const loadFactor = this.computeLoadFactor();
+    if (loadFactor > this.loadFactorThreshold) {
+      this.resize(this.size * 2);
+    }
+  }
+
+  private computeLoadFactor(): number {
+    let itemCount = 0;
+    this.table.forEach((node) => (itemCount += node !== null ? 1 : 0));
+    return itemCount / this.size;
+  }
+
+  private resize(newSize: number): void {
+    const oldTable = this.table;
+    this.size = newSize;
+    this.table = new Array<Node | null>(this.size).fill(null);
+
+    oldTable.forEach((node) => {
+      while (node !== null) {
+        this.insertWithoutResize(node.key, node.value);
+        node = node.next;
+      }
+    });
+  }
+
+  private insertWithoutResize(key: any, value: any): void {
+    const index = this.hashFunction(key);
+    const newNode = new Node(key, value);
+    newNode.next = this.table[index];
+    this.table[index] = newNode;
+  }
+
+  public insert(key: any, value: any): boolean {
+    this.resizeIfNeeded();
+
+    const index = this.hashFunction(key);
+    let currentNode = this.table[index];
+
+    while (currentNode !== null) {
+      if (currentNode.key === key) {
+        return false;
+      }
+      currentNode = currentNode.next;
+    }
+
+    this.insertWithoutResize(key, value);
+    return true;
+  }
+
+  public update(key: any, value: any): boolean {
+    const index = this.hashFunction(key);
+    let currentNode = this.table[index];
+
+    while (currentNode !== null) {
+      if (currentNode.key === key) {
+        currentNode.value = value;
+        return true;
+      }
+      currentNode = currentNode.next;
+    }
+
+    return false;
+  }
+
+  public get(key: any): any {
+    const index = this.hashFunction(key);
+    let currentNode = this.table[index];
+
+    while (currentNode !== null) {
+      if (currentNode.key === key) {
+        return currentNode.value;
+      }
+      currentNode = currentNode.next;
+    }
+
+    return null;
+  }
+
+  public remove(key: any): boolean {
+    const index = this.hashFunction(key);
+    let currentNode = this.table[index];
+    let prevNode = null;
+
+    while (currentNode !== null) {
+      if (currentNode.key === key) {
+        if (!prevNode) {
+          this.table[index] = currentNode.next;
+        } else {
+          prevNode.next = currentNode.next;
+        }
+        return true;
+      }
+      prevNode = currentNode;
+      currentNode = currentNode.next;
+    }
+
+    return false;
+  }
+}
+
+class LinearProbingHashTable {
+  private size: number;
+  public table: (Node | null)[];
+
+  constructor(size: number = 10) {
+    this.size = size;
+    this.table = new Array<Node | null>(size).fill(null);
+  }
+
+  private hashFunction(key: any): number {
+    if (typeof key === 'number') {
+      return key % this.size;
+    } else if (typeof key === 'string') {
+      let hash = 0;
+      for (let i = 0; i < key.length; i++) {
+        hash = (hash << 5) - hash + key.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
+      }
+      return Math.abs(hash) % this.size;
+    }
+    throw new Error('Unsupported key type');
+  }
+
+  public insert(key: any, value: any): boolean {
+    let index = this.hashFunction(key);
+
+    for (let i = 0; i < this.size; i++) {
+      if (this.table[index] === null || this.table[index]?.key === key) {
+        this.table[index] = new Node(key, value);
+        return true;
+      }
+
+      index = (index + 1) % this.size;
+    }
+
+    return false; // Hash table is full
+  }
+
+  public get(key: any): any {
+    let index = this.hashFunction(key);
+
+    for (let i = 0; i < this.size; i++) {
+      if (this.table[index]?.key === key) {
+        return this.table[index]?.value;
+      } else if (this.table[index] === null) {
+        return null; // Key not found
+      }
+
+      index = (index + 1) % this.size;
+    }
+
+    return null; // Key not found
+  }
+
+  public update(key: any, value: any): boolean {
+    let index = this.hashFunction(key);
+
+    for (let i = 0; i < this.size; i++) {
+      if (this.table[index]?.key === key) {
+        if (this.table[index] !== null) {
+          this.table[index]!.value = value;
+          return true;
+        }
+      } else if (this.table[index] === null) {
+        return false; // Key not found
+      }
+
+      index = (index + 1) % this.size;
+    }
+
+    return false; // Key not found
+  }
+
+  public remove(key: any): boolean {
+    let index = this.hashFunction(key);
+
+    for (let i = 0; i < this.size; i++) {
+      if (this.table[index]?.key === key) {
+        this.table[index] = null; // Mark as deleted
+        return true;
+      } else if (this.table[index] === null) {
+        return false; // Key not found
+      }
+
+      index = (index + 1) % this.size;
+    }
+
+    return false; // Key not found
   }
 }

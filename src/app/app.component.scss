@@ -5,3 +5,11 @@
   box-shadow: 0px 4px 30px rgba(173, 179, 238, 0.54);
   border-radius: 12px;
 }
+
+.occupied-slot {
+  color: green; /* or any color indicating occupancy */
+}
+
+.empty-slot {
+  color: red; /* or any color indicating emptiness */
+}
