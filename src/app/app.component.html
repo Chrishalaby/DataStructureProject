@@ -56,11 +56,22 @@
       pTooltip="Displays the current elements in the static hash table. This table doesn't resize dynamically."
     >
       <h3>Current State of Static Hash Table</h3>
-      <ul>
-        <li *ngFor="let item of hashTableItems">
-          Key: {{ item.key }}, Value: {{ item.value }}
-        </li>
-      </ul>
+      <table>
+        <tr>
+          <th>Index</th>
+          <th>Chains (Key -> Value)</th>
+        </tr>
+        <tr *ngFor="let item of hashTableItems">
+          <td>{{ item.index }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let node of item.chain">
+                {{ node.key }} -> {{ node.value }}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
     </div>
   </p-tabPanel>
   <p-tabPanel header="Dynamic Hash Table">

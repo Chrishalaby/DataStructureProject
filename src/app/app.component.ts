@@ -26,7 +26,7 @@ import { TooltipModule } from 'primeng/tooltip';
 export class AppComponent {
   title = 'Data Structure Project';
 
-  hashTableItems: { key: number; value: number }[] = [];
+  hashTableItems: { index: number; chain: any[] }[] = [];
   hashTableItemsDynamic: { key: number; value: number }[] = [];
   hashTableItemsLinearProbing: { key: number; value: number }[] = [];
   hashTableItemsEnhanced: { key: number; value: number }[] = [];
@@ -52,35 +52,49 @@ export class AppComponent {
   // ##### HERE STARTS STATIC HASH TABLE #####
 
   insert(): void {
+    const index = this.hashTable.hashFunction(this.key);
     const inserted = this.hashTable.insert(this.key, this.value);
     if (inserted) {
-      this.result = `Inserted key ${this.key} with value ${this.value}`;
+      this.result = `Inserted key ${this.key} with value ${this.value} at index ${index}`;
     } else {
-      this.result = `Insertion failed: Key ${this.key} already exists`;
+      this.result = `Insertion failed: Key ${this.key} already exists at index ${index}`;
     }
 
     this.updateHashTableItems();
   }
 
   update(): void {
+    const index = this.hashTable.hashFunction(this.key);
     const updated = this.hashTable.update(this.key, this.value);
-    this.result = updated
-      ? `Updated key ${this.key} with new value ${this.value}`
-      : 'Key not found, update not performed';
+    if (updated) {
+      this.result = `Updated key ${this.key} with new value ${this.value} at index ${index}`;
+    } else {
+      this.result = `Key not found, update not performed for key ${this.key} at index ${index}`;
+    }
 
     this.updateHashTableItems();
   }
 
   getValue(): void {
+    const index = this.hashTable.hashFunction(this.key);
     const value = this.hashTable.get(this.key);
-    this.result = value !== -1 ? `Value: ${value}` : 'Key not found';
+    if (value !== -1) {
+      this.result = `Value: ${value} found at index ${index} for key ${this.key}`;
+    } else {
+      this.result = `Key not found: ${this.key} at index ${index}`;
+    }
 
     this.updateHashTableItems();
   }
 
   remove(): void {
+    const index = this.hashTable.hashFunction(this.key);
     const removed = this.hashTable.remove(this.key);
-    this.result = removed ? `Key ${this.key} removed` : 'Key not found';
+    if (removed) {
+      this.result = `Key ${this.key} removed from index ${index}`;
+    } else {
+      this.result = `Key not found: ${this.key} at index ${index}`;
+    }
 
     this.updateHashTableItems();
   }
@@ -88,13 +102,17 @@ export class AppComponent {
   updateHashTableItems(): void {
     this.hashTableItems = [];
     for (let i = 0; i < this.hashTable.table.length; i++) {
+      let chain = [];
       let currentNode = this.hashTable.table[i];
       while (currentNode !== null) {
-        this.hashTableItems.push({
-          key: currentNode.key,
-          value: currentNode.value,
-        });
+        chain.push({ key: currentNode.key, value: currentNode.value });
         currentNode = currentNode.next;
+      }
+      if (chain.length > 0) {
+        this.hashTableItems.push({ index: i, chain: chain });
+      } else {
+        // Even if it's empty, we show the slot to illustrate the structure
+        this.hashTableItems.push({ index: i, chain: [] });
       }
     }
   }
@@ -300,12 +318,12 @@ class HashTable {
   private size: number;
   table: Array<Node | null>;
 
-  constructor(size: number = 10) {
+  constructor(size: number = 5) {
     this.size = size;
     this.table = new Array<Node | null>(size).fill(null);
   }
 
-  private hashFunction(key: number): number {
+  hashFunction(key: number): number {
     return key % this.size;
   }
 
@@ -647,7 +665,7 @@ class LinearProbingHashTable {
   private size: number;
   public table: (Node | null)[];
 
-  constructor(size: number = 10) {
+  constructor(size: number = 3) {
     this.size = size;
     this.table = new Array<Node | null>(size).fill(null);
   }
